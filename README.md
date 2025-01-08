@@ -1,0 +1,1 @@
+This repository contains resources, code, and projects focused on Artificial Intelligence (AI). It encompasses both traditional AI techniques and modern Machine Learning (ML) methods, specifically in the area of supervised learning

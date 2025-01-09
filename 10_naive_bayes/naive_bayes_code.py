@@ -61,9 +61,13 @@ def naive_bayes_classifier(text, prior_probs, word_likelihoods, vocabulary):
     for label in [0, 1]:
         for word in words:
             if word in vocabulary:
-                scores[label] += math.log(word_likelihoods[label].get(word, 1 / len(vocabulary)))
+                scores[label] += math.log(word_likelihoods[label].get(word, 1 / (len(vocabulary) + 1)))
+            else:
+                # Handle unseen words with a fallback likelihood
+                scores[label] += math.log(1 / (len(vocabulary) + 1))
     
     return 1 if scores[1] > scores[0] else 0
+
 
 # Step 5: Evaluate the classifier
 def evaluate_classifier(test_data, prior_probs, word_likelihoods, vocabulary):
@@ -80,25 +84,30 @@ def evaluate_classifier(test_data, prior_probs, word_likelihoods, vocabulary):
 # Main Program
 if __name__ == "__main__":
     # Dataset
-    dataset = [
-        ("I love this movie", 1),
-        ("This film is fantastic", 1),
-        ("What an amazing experience", 1),
-        ("I dislike this movie", 0),
-        ("Not a great film", 0),
-        ("This is terrible", 0)
-    ]
+  dataset = [
+    ("I love this movie", 1),
+    ("This film is fantastic", 1),
+    ("What an amazing experience", 1),
+    ("I dislike this movie", 0),
+    ("Not a great film", 0),
+    ("This is terrible", 0),
+    ("I hate this", 0),
+    ("A wonderful experience", 1),
+    ("Such a great film", 1),
+    ("This is awful", 0)
+]
+
     
     # Split dataset into training and test sets
-    training_data = dataset[:4]
-    test_data = dataset[4:]
+training_data = dataset[:8]
+test_data = dataset[8:]
     
     # Build vocabulary
-    vocabulary = build_vocabulary(training_data)
+vocabulary = build_vocabulary(training_data)
     
     # Calculate probabilities
-    prior_probs, word_likelihoods = calculate_probabilities(training_data, vocabulary)
+prior_probs, word_likelihoods = calculate_probabilities(training_data, vocabulary)
     
     # Evaluate the classifier
-    accuracy = evaluate_classifier(test_data, prior_probs, word_likelihoods, vocabulary)
-    print(f"Accuracy: {accuracy * 100:.2f}%")
+accuracy = evaluate_classifier(test_data, prior_probs, word_likelihoods, vocabulary)
+print(f"Accuracy: {accuracy * 100:.2f}%")
